@@ -1,4 +1,4 @@
-#pragma once
+п»ї#pragma once
 
 #ifndef _LEMNISCATA_H_
 #define _LEMNISCATA_H_
@@ -24,18 +24,18 @@ namespace Figure {
 	class Lemniscata {
 	private:
 		double a;
-		double degToRad(const double& angle) const { return (angle * M_PI) / 180; }  //перевод градусов в радианы
+		double degToRad(const double& angle) const { return (angle * M_PI) / 180; }  //РїРµСЂРµРІРѕРґ РіСЂР°РґСѓСЃРѕРІ РІ СЂР°РґРёР°РЅС‹
 	public:
-		//пустой и инициализирующий конструктор
+		//РїСѓСЃС‚РѕР№ Рё РёРЅРёС†РёР°Р»РёР·РёСЂСѓСЋС‰РёР№ РєРѕРЅСЃС‚СЂСѓРєС‚РѕСЂ
 		Lemniscata(double arg = 1);
 		Lemniscata& setA(double a0); 
 		double getA() const { return a; }  
-		//другие методы
+		//РґСЂСѓРіРёРµ РјРµС‚РѕРґС‹
 		double distance(double angle) const; 
 		double curvePhi(double angle) const; 
 		double curveR(double r) const; 
 		double areaS(double angle) const; 
-		double area() const { return a * a / 2; } //площадь лемнискаты
+		double area() const { return a * a / 2; } //РїР»РѕС‰Р°РґСЊ Р»РµРјРЅРёСЃРєР°С‚С‹
 	};
 }
 #endif 
