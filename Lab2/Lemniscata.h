@@ -24,7 +24,6 @@ namespace Figure {
 	class Lemniscata {
 	private:
 		double a;
-		double degToRad(const double& angle) const { return (angle * M_PI) / 180; }  //перевод градусов в радианы
 	public:
 		//пустой и инициализирующий конструктор
 		Lemniscata(double arg = 1);
@@ -36,6 +35,7 @@ namespace Figure {
 		double curveR(double r) const; 
 		double areaS(double angle) const; 
 		double area() const { return a * a / 2; } //площадь лемнискаты
+		double degToRad(const double& angle) const { return (angle * M_PI) / 180; }  //перевод градусов в радианы
 	};
 }
 #endif 

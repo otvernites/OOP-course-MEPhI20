@@ -88,6 +88,7 @@ TEST(LemniscataMethods2, Parameters)
 	ASSERT_ANY_THROW(l.areaS(-10));
 
 	ASSERT_EQ(50.0, l.area());
+	ASSERT_NEAR(0.52360, l.degToRad(30), error);
 }
 
 int _tmain(int argc, _TCHAR* argv[]) {
