@@ -17,7 +17,7 @@ void (*dialogs[])(Hex&) = {
         Dialog_move_right
 };
 
-int Get_solution () {
+int Get_solution() {
     const char* menu[] = {
         "0. Exit",
         "1. Input new number",
@@ -48,7 +48,7 @@ int main()
     Hex first;
     std::cout << "Enter the first decimal number: ";
     try {
-        first.input(std::cin);
+        std::cin >> first;
     }
     catch (std::length_error& ex) {
         std::cout << ex.what() << std::endl;

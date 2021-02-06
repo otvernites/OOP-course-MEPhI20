@@ -1,9 +1,7 @@
 #include "pch.h"
-#include "../laba3a/hex.cpp"
+#include "../Hex.cpp"
 #include "gtest/gtest.h"
 #include <sstream>
-
-
 
 //тестирование конструкторов
 TEST(HexConstructors, DefaultConstructor) {
@@ -19,7 +17,7 @@ TEST(HexConstructors, ConstConstructor) {
 	Lab3a::Hex num1(0x0000023cb4);
 	Lab3a::Hex num2(-0x41daa0);
 	Lab3a::Hex num3(-0xAc);
-	
+
 	ASSERT_EQ(5, num1.getLen());
 	ASSERT_EQ('+', num1.getSign());
 	std::stringstream out1;
@@ -79,59 +77,59 @@ TEST(HexConstructors, CopyConstructor) {
 TEST(OtherMethods, Add) {
 	Lab3a::Hex first("+1c52");
 	Lab3a::Hex second("+891");
-	Lab3a::Hex result = first.Add(second);
+	Lab3a::Hex result = first + second;
 	std::stringstream out1;
-	result.output(out1);
+	out1 << result;
 	ASSERT_EQ("24E3\n", out1.str());
 
 	first = "+a5bfffffffffff";
 	second = "+ffffffffffffc7";
-	ASSERT_THROW(first.Add(second), std::exception);
+	ASSERT_THROW((first + second), std::exception);
 
 	first = "+c5b";
 	second = "-a7e";
-	result = first.Add(second);
+	result = first + second;
 	std::stringstream out2;
-	result.output(out2);
+	out2 << result;
 	ASSERT_EQ("1DD\n", out2.str());
 
 	first = "-A59";
 	second = "+1ba";
-	result = first.Add(second);
+	result = first + second;
 	std::stringstream out3;
-	result.output(out3);
+	out3 << result;
 	ASSERT_EQ("-89F\n", out3.str());
 
 	first = "-5ac";
 	second = "-c44e";
-	result = first.Add(second);
+	result = first + second;
 	std::stringstream out4;
-	result.output(out4);
+	out4 << result;
 	ASSERT_EQ("-C9FA\n", out4.str());
 
 	first = "-a5bfffffffffff";
 	second = "-ffffffffffffc7";
-	ASSERT_THROW(first.Add(second), std::exception);
+	ASSERT_THROW((first + second), std::exception);
 }
 
 TEST(OtherMethods, Subtract) {
 	Lab3a::Hex first("+43a");
 	Lab3a::Hex second("+3fec");
-	Lab3a::Hex result = first.Subtract(second);
+	Lab3a::Hex result = first - second;
 	std::stringstream out1;
-	result.output(out1);
+	out1 << result;
 	ASSERT_EQ("-3BB2\n", out1.str());
-	
+
 	first = "-bcef";
 	second = "+42f";
-	result = first.Subtract(second);
+	result = first - second;
 	std::stringstream out2;
-	result.output(out2);
+	out2 << result;
 	ASSERT_EQ("-C11E\n", out2.str());
 
 	first = "-a5bfffffffffff";
 	second = "+ffffffffffffc7";
-	ASSERT_THROW(first.Subtract(second), std::exception);
+	ASSERT_THROW((first - second), std::exception);
 }
 
 TEST(OtherMethods, Parity) {
@@ -168,37 +166,46 @@ TEST(OtherMethods, Compare) {
 
 	first = "-abcd";
 	second = "-abcd";
-	ASSERT_EQ(0, first.Compare(second)); 
+	ASSERT_EQ(0, first.Compare(second));
 }
 
 TEST(OtherMethods, MoveRight) {
 	Lab3a::Hex a(0x5624f), b(0x56), c, e(-0x8902), f(-0x890);
-	a.Move_right(3);
+	a >>= 3;
 	ASSERT_EQ(0, a.Compare(b));
-	a.Move_right(20);
-	ASSERT_EQ(0, a.Compare(c));	
-	e.Move_right(1);
+	a >>= 20;
+	ASSERT_EQ(0, a.Compare(c));
+	e >>= 1;
 	ASSERT_EQ(0, e.Compare(f));
 
-
-	ASSERT_THROW(a.Move_right(-10), std::exception);
-} 
+	ASSERT_THROW(a >>= -10, std::exception);
+}
 
 TEST(OtherMethods, MoveLeft) {
 	Lab3a::Hex d(0x5624f00);
 	Lab3a::Hex a(0x5624f), b(0x56), c, e(-0x2451000), f(-0x2451);
-	a.Move_left(2);
+	a <<= 2;
 	ASSERT_EQ(0, a.Compare(d));
-	b.Move_left(35);
+	b <<= 35;
 	ASSERT_EQ(0, b.Compare(c));
-	f.Move_left(3);
+	f <<= 3;
 	ASSERT_EQ(0, f.Compare(e));
 
-	ASSERT_THROW(a.Move_left(-10), std::exception);	
-} 
+	ASSERT_THROW(a <<= -10, std::exception);
+}
+
+TEST(OtherMethods, Equivalence) {
+	Lab3a::Hex a(0xbc34a), b(0x56); 
+	a = b;
+	ASSERT_EQ(0, a.Compare(b));
+
+	Lab3a::Hex e(0xbc3a), d(0xbc90);
+	e += b;
+	ASSERT_EQ(0, e.Compare(d));
+}
 
 int main(int argc, char* argv[])
 {
 	::testing::InitGoogleTest(&argc, argv);
 	return RUN_ALL_TESTS();
-} 
+}

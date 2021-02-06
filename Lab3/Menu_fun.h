@@ -26,12 +26,14 @@ namespace Lab3a {
 		}
 		catch (std::length_error& ex) {
 			std::cout << ex.what() << std::endl;
+			system("pause");
 		}
 		catch (std::invalid_argument& ex) {
 			std::cout << ex.what() << std::endl;
+			system("pause");
 		}
 	}
-	//
+	
 	void Dialog_output(Hex& num) {
 		std::cout << "Your number: ";
 		num.output(std::cout);

@@ -1,51 +1,51 @@
-п»ї#define _CRT_SECURE_NO_WARNINGS 1
+#define _CRT_SECURE_NO_WARNINGS 1
 
-#include "hex.h"
+#include "../3b/Hex.h"
 
 namespace Lab3a {
 
-	//РїСѓСЃС‚РѕР№ РєРѕРЅСЃС‚СЂСѓРєС‚РѕСЂ - РїРѕР»РѕР¶РёС‚РµР»СЊРЅРѕРµ С‡РёСЃР»Рѕ, РІРѕ РІСЃРµС… СЂР°Р·СЂСЏРґР°С… РЅСѓР»Рё 
+	//пустой конструктор - положительное число, во всех разрядах нули 
 	Hex::Hex() : len(1) {
 		for (int i = 0; i < MAX_LEN; i++) {
 			hex[i] = '0';
 		}
 	}
 
-	//РёРЅРёС†РёР°Р»РёР·Р°С†РёСЏ С€РµСЃС‚РЅР°РґС†Р°С‚РµСЂРёС‡РЅРѕР№ РєРѕРЅСЃС‚Р°РЅС‚РѕР№ 
+	//инициализация шестнадцатеричной константой 
 	Hex::Hex(const long int num) {
 		char digits[MAX_LEN + 1];
-		_itoa(abs(num), digits+1, 16);
+		_itoa(abs(num), digits + 1, 16);
 		digits[0] = (num > 0) ? '0' : '1';
 		digits[MAX_LEN] = '\0';
 		this->Hex::Hex(digits);
 		updateLen();
 	}
 
-	//РёРЅРёС†РёР°Р»РёР·Р°С†РёСЏ СЃС‚СЂРѕРєРѕР№ СЃРёРјРІРѕР»РѕРІ
+	//инициализация строкой символов
 	Hex::Hex(const char* str) : len(strlen(str)) {
-		
-		if (str[1] == '0') { //РµСЃР»Рё РµСЃС‚СЊ Р»РёРґРёСЂСѓСЋС‰РёРµ РЅСѓР»Рё 
+
+		if (str[1] == '0') { //если есть лидирующие нули 
 			for (; *str == '0';) {
 				str = str + 1;
 				len = len - 1;
 			}
 		}
 
-		if ((len > MAX_LEN) || (len == 0)) //РїСЂРѕРІРµСЂРєР° РґРёР°РїР°Р·РѕРЅР° Р·РЅР°С‡РµРЅРёР№
+		if ((len > MAX_LEN) || (len == 0)) //проверка диапазона значений
 			throw std::length_error("Error. Number out of range.");
 
 		int j = 0;
-		for (int i = len - 1; i > 0; i--, ++j) { //РїСЂРѕРІРµСЂРєР° РЅР° РїСЂР°РІРёР»СЊРЅРѕСЃС‚СЊ РІРІРѕРґР°
+		for (int i = len - 1; i > 0; i--, ++j) { //проверка на правильность ввода
 			if ((str[i] < '0') || ((str[i] > '9'))
 				&& ((str[i] < 'A') || (str[i] > 'F'))
 				&& ((str[i] < 'a') || (str[i] > 'f')))
 				throw std::invalid_argument("Invalid value! Enter a hexadecimal number.");
 
-			hex[j] = str[i]; //РїРѕСЃРёРјРІРѕР»СЊРЅРѕРµ Р·Р°РїРѕР»РЅРµРЅРёРµ РІ РѕР±СЂР°С‚РЅРѕРј РїРѕСЂСЏРґРєРµ
+			hex[j] = str[i]; //посимвольное заполнение в обратном порядке
 		}
 
-		for (int i = len-1; i < MAX_LEN - 1; i++) {
-			hex[i] = '0'; //Р·Р°РїРѕР»РЅРµРЅРёРµ РЅСѓР»СЏРјРё 
+		for (int i = len - 1; i < MAX_LEN - 1; i++) {
+			hex[i] = '0'; //заполнение нулями 
 		}
 
 		if (str[0] == '0' || str[0] == '+') {
@@ -57,7 +57,7 @@ namespace Lab3a {
 		updateLen();
 	}
 
-	//РєРѕРїРёСЂСѓСЋС‰РёР№ РєРѕРЅСЃС‚СЂСѓРєС‚РѕСЂ
+	//копирующий конструктор
 	Hex::Hex(const Hex& num) {
 		len = num.len;
 		for (int i = 0; i < MAX_LEN; i++) {
@@ -103,9 +103,21 @@ namespace Lab3a {
 		return in;
 	}
 
+	std::istream& operator>>(std::istream& in, Hex& num) {
+		num.input(in);
+		if (!in.good()) {
+			in.setstate(std::ios::failbit);
+		}
+		return in;
+	}
+
+	std::ostream& operator<<(std::ostream& out, const Hex& num) {
+		return num.output(out);
+	}
+
 	std::ostream& Hex::output(std::ostream& out) const {
 		int k = std::min(len - 1, MAX_LEN - 2);
-		if ((hex[MAX_LEN - 1] == '1') && (len !=0)) out << '-';
+		if ((hex[MAX_LEN - 1] == '1') && (len != 0)) out << '-';
 		for (int i = k; i >= 0; --i) {
 			out << hex[i];
 		}
@@ -120,9 +132,9 @@ namespace Lab3a {
 		Hex second = num;
 		Hex sum;
 
-		if(first.getSign() == second.getSign()){
+		if (first.getSign() == second.getSign()) {
 			int num, overdrive = 0;
-			for (int i = 0; i < MAX_LEN - 1 ; i++) {
+			for (int i = 0; i < MAX_LEN - 1; i++) {
 				num = (charToHex(first.hex[i]) + charToHex(second.hex[i])) + overdrive;
 				sum.hex[i] = hexToChar(num % 16);
 				overdrive = num / 16;
@@ -138,23 +150,23 @@ namespace Lab3a {
 			}
 			else sign = 1;
 
-			
-			first.twosРЎomplement();
-			second.twosРЎomplement();
+
+			first.twosСomplement();
+			second.twosСomplement();
 
 			int num, overdrive = 0;
-			for (int i = 0; i < MAX_LEN-1; i++) {
+			for (int i = 0; i < MAX_LEN - 1; i++) {
 				num = (charToHex(first.hex[i]) + charToHex(second.hex[i])) + overdrive;
 				sum.hex[i] = hexToChar(num % 16);
 				overdrive = num / 16;
 			}
 
 			sum.hex[MAX_LEN - 1] = hexToChar(int(sign));
-			sum.twosРЎomplement();			
+			sum.twosСomplement();
 		}
 		sum.updateLen();
 		return sum;
- 	}
+	}
 
 	Hex Hex::Subtract(const Hex& num) const {
 		Hex decrease = num;
@@ -168,19 +180,29 @@ namespace Lab3a {
 		return this->Add(decrease);
 	}
 
+	Hex& Hex::operator>>= (const int n) {
+		Move_right(n);
+		return *this;
+	}
+
 	Hex& Hex::Move_right(const int n) {
 		if (n < 0)
 			throw std::exception("Invalid index");
 
-		for (int i = 0; i < len - n; i++) { //РєРѕРїРёСЂРѕРІР°РЅРёРµ 
+		for (int i = 0; i < len - n; i++) { //копирование 
 			hex[i] = hex[n + i];
 		}
 
-		for (int i = std::max(len - n, 0); i < MAX_LEN - 1; i++) { //РґРѕРїРѕР»РЅРµРЅРёРµ РЅСѓР»СЏРјРё, СЃ СѓС‡РµС‚РѕРј Р±РѕР»СЊС€РѕРіРѕ Р·РЅ. n
+		for (int i = std::max(len - n, 0); i < MAX_LEN - 1; i++) { //дополнение нулями, с учетом большого зн. n
 			hex[i] = '0';
 		}
 
-		len-=n;
+		len -= n;
+		return *this;
+	}
+
+	Hex& Hex::operator<<= (const int n) {
+		Move_left(n);
 		return *this;
 	}
 
@@ -195,19 +217,19 @@ namespace Lab3a {
 			hex[j] = hex[i];
 		}
 
-		int k = std::min(MAX_LEN-2, n);
+		int k = std::min(MAX_LEN - 2, n);
 
 		for (int i = 0; i < k; i++) {
 			hex[i] = '0';
 		}
 
-		len+=n;
+		len += n;
 		return *this;
 	}
 
 	int Hex::Compare(const Hex& num) const {
 
-		//РѕР±СЂР°Р±РѕС‚РєР° СЃР»СѓС‡Р°РµРІ, РєРѕРіРґР° Р·РЅР°РєРё СЂР°Р·РЅС‹Рµ
+		//обработка случаев, когда знаки разные
 		if ((hex[MAX_LEN - 1] == '0') && (num.getSign() == '-')) {
 			return 1;
 		}
@@ -215,7 +237,7 @@ namespace Lab3a {
 		else if ((hex[MAX_LEN - 1] == '1') && (num.getSign() == '+')) {
 			return -1;
 
-			//РєРѕРіРґР° Р·РЅР°Рє РѕРґРёРЅ
+			//когда знак один
 		}
 		else {
 			Hex result = this->Subtract(num);
@@ -249,7 +271,7 @@ namespace Lab3a {
 		else return false;
 	}
 
-	Hex& Hex::twosРЎomplement() {
+	Hex& Hex::twosСomplement() {
 		if (hex[MAX_LEN - 1] == '0')
 			return *this;
 		else {
@@ -277,15 +299,15 @@ namespace Lab3a {
 		return *this;
 	}
 
-	char Hex::getSign() const { //РїРѕР»СѓС‡РµРЅРёРµ Р·РЅР°РєР° С‡РёСЃР»Р°
-		if ((hex[MAX_LEN-1] == '0'))
+	char Hex::getSign() const { //получение знака числа
+		if ((hex[MAX_LEN - 1] == '0'))
 			return '+';
 		else return '-';
 	}
 
 	void Hex::updateLen() {
 		int new_len = MAX_LEN - 1;
-		for (int i = MAX_LEN-2; i >= 0; i--)
+		for (int i = MAX_LEN - 2; i >= 0; i--)
 		{
 			if (hex[i] == '0') new_len--;
 			else break;
@@ -306,8 +328,11 @@ namespace Lab3a {
 	char hexToChar(const int num) {
 		if ((num >= 0) && (num <= 9))
 			return num + '0';
-		else if ((num >= 10 ) && (num <= 15 ))
+		else if ((num >= 10) && (num <= 15))
 			return num + 'A' - 10;
 		throw std::exception("invalid parametr");
 	}
 }
+
+
+
