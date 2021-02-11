@@ -21,9 +21,7 @@ namespace Accs {
 		int day;
 		int month;
 		int year;
-
-		date() : day(0), month(0), year(0) {};
-
+		date(int d = 0, int m = 0, int y = 0) : day(d), month(m), year(y) {};
 		friend std::ostream& operator << (std::ostream& out, const date& d) {
 			out << d.day << "." << d.month << "." << d.year;
 			return out;
@@ -77,6 +75,14 @@ namespace Accs {
 		virtual std::istream& inputInfo(std::istream&) = 0;
 
 	public:
+		// для тестов
+		date get_open_date() const {
+			return open_date;
+		}
+		double get_percent() const{
+			return percent;
+		}
+		//
 		Deposit(double sum0 = 0, date open_date0 = date(), double percent0 = 0);
 
 		friend std::ostream& operator<< (std::ostream&, const Deposit&);
@@ -97,6 +103,11 @@ namespace Accs {
 		virtual std::ostream& getInfo(std::ostream&) const;
 		virtual std::istream& inputInfo(std::istream&);
 	public:
+		// для тестов
+		date get_last_date() const{
+			return last_date;
+		}
+		//
 		commonDeposit(double sum0 = 0, date open_date0 = date(), 
 					  double percent0 = 0, date last_date0 = date());
 
@@ -130,6 +141,13 @@ namespace Accs {
 		virtual std::ostream& getInfo(std::ostream&) const;
 		virtual std::istream& inputInfo(std::istream&);
 	public:
+		//для тестов
+		int get_curr() const {
+			return curr;
+		}
+		double get_rate() const {
+			return exchangeRate;
+		}
 		currDeposit(double sum0 = 0, date open_date0 = date(), 
 					double percent0 = 0, int curr0 = 1, 
 					date last_date0 = date(), double exchangeRate = 1.0);

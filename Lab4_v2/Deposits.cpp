@@ -1,3 +1,4 @@
+#include "pch.h"
 #include "Deposits.h"
 
 namespace Accs {
@@ -10,13 +11,12 @@ namespace Accs {
 
 	double Deposit::income(const Deposit& dep, const date& curr_date) const {
 		double k = (-(dep.getLast().day + dep.getLast().month * 31 + dep.getLast().year * 372) +
-			(curr_date.day + curr_date.month * 31 + curr_date.year * 372))/31.0;
-		k = k * 100 / 100; // округление
+			(curr_date.day + curr_date.month * 31 + curr_date.year * 372)) / 31.0;
 		if (k <= 0) {
 			throw std::exception("Incorrect current date");
 		}
 
-		return (dep.sum * 0.01 * dep.percent * k);
+		return (int)((dep.sum * 0.01 * dep.percent * k) * 100) / 100.;
 	}
 
 	std::ostream& commonDeposit::getInfo(std::ostream& out) const {

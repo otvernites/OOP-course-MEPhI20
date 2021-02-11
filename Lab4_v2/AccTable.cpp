@@ -1,10 +1,11 @@
+#include "pch.h"
 #include "AccTable.h"
 #include <map>
 #include <iostream>
 
 
 namespace Accs {
-	
+
 	accTable::~accTable() {
 		My_Map <int, Deposit*>::Iterator it(table.begin());
 		for (; it != table.end(); it++) {
@@ -33,6 +34,15 @@ namespace Accs {
 			return;
 		}
 		table.erase(id);
+	}
+	int accTable::operator== (const accTable& tab2) const {
+		My_Map<int, Deposit*>::Iterator it1 = tab2.table.begin(), it2 = tab2.table.begin();
+		for (; it1 != tab2.table.end(), it2 != tab2.table.end(); it1++, it2++) {
+			if ((*it1) != (*it2)) {
+				return false;
+			}
+		}
+		return true;
 	}
 	int accTable::replace(int account_number, Deposit* new_deposit) {
 		My_Map<int, Deposit*>::Iterator res = table.find(account_number);
